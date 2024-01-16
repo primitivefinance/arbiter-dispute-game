@@ -1,8 +1,8 @@
 //! Constants used throughout the simulation.
 
-use revm::primitives::{Address, address};
+use revm::primitives::{address, Address};
 
-/// The [arbiter_engine::agent::Agent] ID for the deployer actor. 
+/// The [arbiter_engine::agent::Agent] ID for the deployer actor.
 pub const DEPLOYER_ID: &str = "deployer";
 
 /// The [Address] of the dispute game factory proxy.
