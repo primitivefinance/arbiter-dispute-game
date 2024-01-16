@@ -1,0 +1,4 @@
+/target
+
+state-dump/prestate-artifacts.tar.gz
+state-dump/dump.json
