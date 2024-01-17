@@ -7,9 +7,12 @@ use arbiter_core::{
     database::AnvilDump,
     environment::builder::{BlockSettings, EnvironmentBuilder},
 };
-use arbiter_engine::world::World;
+use arbiter_engine::{world::World, messager::Message, machine::Behavior};
+use durin_primitives::Claim;
 use ethers::providers::Middleware;
 use revm::db::{CacheDB, EmptyDB};
+use async_trait::async_trait;
+
 
 mod agents;
 mod constants;
@@ -23,8 +26,35 @@ mod dispute_game_factory {
 
     sol! {
         function create(uint8 _gameType, bytes32 _claim, bytes calldata _extraData) external payable returns (address);
+        // What is the claim type in the function?
     }
 }
+
+pub struct GameWatcher {
+    game: Address,
+    latest_claim: Claim,
+}
+#[async_trait]
+impl Behavior<Claim> for GameWatcher {
+    // This should be the alloy type of the claim
+    
+    async fn startup(&mut self) {
+        self.sync().await;
+    }
+
+    async fn process(&mut self, event: Claim) {
+        self.sync().await;
+        // here we should send the claim to durin and get back the right move
+        // we might want
+        todo!()
+    }
+
+    async fn sync(&mut self) {
+        // I think the sync should just get the lastest claim.
+        todo!()
+    }
+}
+
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -65,5 +95,19 @@ async fn main() -> Result<()> {
         dispute_game_proxy.as_fixed_bytes().into()
     ));
 
+    let game_watcher = GameWatcher {
+        game: Address::from_word(dispute_game_proxy.as_fixed_bytes().into()),
+        latest_claim: Claim::default(),
+    };
+
+    agent.add_behavior(game_watcher);
+
+    // world.run_state(arbiter_engine::machine::State::Syncing);
+    // world.transition().await;
+    // Colin: are these supposed to be public? They are private right now
+
+
+
     Ok(())
 }
+
