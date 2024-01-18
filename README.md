@@ -14,3 +14,4 @@ git submodule update --init --recursive && \
 ```
 
 2. Run the agent simulation with `cargo r`
+# arbiter-dispute-game
