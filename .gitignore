@@ -2,3 +2,14 @@
 
 state-dump/prestate-artifacts.tar.gz
 state-dump/dump.json
+.DS_Store
+security_report/main.out
+security_report/main.log
+security_report/main.aux
+security_report/main.toc
+security_report/report.aux
+security_report/summary.aux
+tsecurity_report/itle.aux
+security_report/_minted-main/3080F839735356D99B1E7E1FA469673589BC318CD59670EB7FDE500ED5DA151C.pygtex
+security_report/_minted-main/C8FBBBF05436752F6BEF4EE280867EA1428F67E20B1EF4619AC5610890C528DA.pygtex
+security_report/_minted-main/default.pygstyle
