@@ -15,3 +15,6 @@ git submodule update --init --recursive && \
 
 2. Run the agent simulation with `cargo r`
 # arbiter-dispute-game
+
+# latex report
+to generate the pdf security report from the main.tex file, run the `./generate_report.sh` script. This will generate a `main.pdf` file in `security_report` directory.
