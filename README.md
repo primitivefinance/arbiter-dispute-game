@@ -24,7 +24,7 @@ to generate the pdf security report from the main.tex file, run the `./generate_
 
 - [Optimistic Rollup](https://ethereum.org/ig/developers/docs/scaling/optimistic-rollups): High level introduction to Optimistic Rollups
 - [dispute-games](https://blog.oplabs.co/dispute-games/): Introduction to the optimism dispute game
-- [Official Dispute Game Specification](https://github.com/ethereum-optimism/optimism/blob/develop/specs/fault-dispute-game.md)
+- [Official Dispute Game Specification](https://github.com/ethereum-optimism/specs/blob/main/specs/fault-dispute-game.md)
 - [Dispute Game Video](https://www.youtube.com/watch?v=nIN5sNc6nQM)
 - [Bondorama](https://www.notion.so/oplabs/Bondorama-886cd1cfefcc44649f3e16f47d9a4477?pvs=4): Current Bond pricing for the game 
 
