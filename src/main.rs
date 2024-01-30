@@ -64,7 +64,7 @@ async fn main() -> Result<()> {
     world.environment.parameters.block_settings = BlockSettings::UserControlled;
 
     // Start off by forwarding to a non-zero block / timestamp.
-    let agent = world.create_agent("orchestrator");
+    let agent = world.create_agent("GameMaster");
     agent.client.update_block(
         U256::from(1 << 5).to_be_bytes(),
         U256::from(1 << 5).to_be_bytes(),
@@ -105,8 +105,6 @@ async fn main() -> Result<()> {
     // world.run_state(arbiter_engine::machine::State::Syncing);
     // world.transition().await;
     // Colin: are these supposed to be public? They are private right now
-
-
 
     Ok(())
 }
