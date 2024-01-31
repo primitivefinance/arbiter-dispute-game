@@ -1,6 +1,6 @@
 # Dispute Game Simulation Specifications
 
-This document aims to dial in on a specification and scope for the Primitive team to audit the disputed game with Arbiter simulations. 
+This document aims to dial in on a specification and scope for the Primitive team to audit the Dispute Game with Arbiter simulations. 
 For the purpose of this document we consider a `Claim` to be a move in the dispute game.
 
 ## Scope
