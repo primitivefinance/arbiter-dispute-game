@@ -1,20 +1,12 @@
 # Dispute Game Simulation Specifications
 
 This document aims to dial in on a specification and scope for the Primitive team to audit the Dispute Game with Arbiter simulations. 
-For the purpose of this document we consider a `Claim` to be a move in the dispute game.
-
-## Scope
-We propose to define two core deliverables for the OP labs team. 
-Both deliverables will evolve from this repository.
-- A report of our findings and analysis of the dispute game located in the `security_report` directory.
-
-- A simulation of the dispute game located in the `src` directory. 
-We want to run 100M Sims on a (single or many) connon trace (on average 1.5b instructions) with at least 5 agent behaviors. 
-Each Cannon trace (which we can run as many simulations as we want on) takes about 45 minutes to solve.
-The [Simulation Specification](#simulation-specification) section defines the simulation details below.
+For the purpose of this document we consider a `Claim` to be a move in the Dispute Game.
 
 ## The Dispute Game
-The fault-proof dispute game is an interactive proof system used to prove the validity of the layer two states on layer one. 
+The fault-proof *dispute game is an interactive proof* system used to prove the validity of the layer two states on layer one. 
+Fault proofs can be created by the dispute game for any Fault proof VM (FVM) and Fault Proof Program(FPP). 
+We will be simulating the Op-Program with the cannon VM.
 Any number of players can play the game. The game has a 7-day chess clock and terminates when the clock runs out.
 Each player moves by making a `Claim` (see dispute game interface) about an index in a cannon execution trace. 
 If no opposing move is made, the claim implicitly resolves to true. 
@@ -24,7 +16,25 @@ If a player makes a false claim and the game resolves, their bond is forfeited a
 - [Dispute Game Interface](https://github.com/ethereum-optimism/specs/blob/main/specs/dispute-game-interface.md)
 - [Fault Dispute Game](https://github.com/ethereum-optimism/specs/blob/main/specs/fault-dispute-game.md)
 
-## Arbiter Simulation
+### The Path to Stage 2
+We understand that the dispute game is a critical component of the path to stage 2 decentralization. 
+We believe that the testing of the dispute game with Arbiter simulations is the most thorough way to study the security of the dispute game. 
+We posit that the software of the simulation will be an invaluable asset to the Optimism Collective moving forward.
+The ability to repoduce game simulations with different Fault VMs and Fault Proof Programs make it high leverage moving forward.  
+
+## Scope
+We propose to define two core deliverables for the OP Labs team. 
+Both deliverables will evolve from this repository.
+- A report of our findings and analysis of the Dispute Game located in the `security_report` directory. 
+This is our scientific analysis of the securiy of the dispute game.
+
+- A simulation of the dispute game located in the `src` directory. 
+We want to run 100M Sims on a (single or many) connon trace (on average 1.5b instructions) with at least 5 agent behaviors. 
+Each Cannon trace (which we can run as many simulations as we want on) takes about 45 minutes to solve.
+The [Simulation Specification](#simulation-specification) section defines the simulation details below. 
+This is a software artifact that can be used to reproduce the simulations of the Dispute Games.
+
+## Arbiter Simulations
 
 Arbiter is an interface over an EVM sandbox built around the rust evm. 
 Arbiter enables agent-based simulations to model the behavior of different externally owned accounts that would interact with a smart contract or system of smart contracts. 
@@ -42,9 +52,9 @@ Many solidity developers deploy their infrastructure with forge scripts.
 We have been able to grab the state that is initialized by a forge script on an anvil instance and dump it into a JSON file. 
 This JSON file can then be loaded into an Arbiter instance to initialize the state of the system. 
 The benefit of this is that we can initialize the system's state the same way it would be initialized in production. This allows us to uncover any particular bugs that may be present in the forge script. 
-While this is nice with the optimism mono repo (like a million contracts), it does not mean we will use the sol macro for communicating with the contracts (examples in the `src` directory. 
+While this is convient with the optimism mono repo (many smart contracts), it does mean we will have to use the sol macro for communicating with the contracts (examples in the `src` directory. 
 
-![Forge Script]assets/image.png)
+![Forge Script](assets/image.png)
 
 This work has already been done, and the bash and forge scripts can be seen [here](state-dump/dump.sh) and [here](state-dump/monorepo/packages/contracts-bedrock/scripts/fpac/FPACOPS.sol)
 
@@ -124,34 +134,46 @@ Once we get this iteration off the ground, we can start getting creative with ma
 
 We consider a positive result **explicitly** to be a reproducible game that is resolved incorrectly for any reason (we correctly identified a flaw in the system). 
 If we find a positive result we will investigate it further and identify and document the conditions under which it occurs in our report.
-We consider a negative result **explicitly** to discover no unexpected behavior in our simulations.
+A positive result can give the Primitive Team more infromation about where to look for additional positive results in the system.
+We consider a negative result **explicitly** to be no unexpected behavior in our simulations.
 
-We will run 100M (very rough estimate) game simulations on one or many cannon execiution traces. 
+We will run 100M (rough estimate) game simulations on one or many cannon execiution traces. 
 We will run these simulations to completion regardless of any findings we make along the way.
-We will vary any combination of up to five malicious agents acording to some heuristics. 
+We will vary any combination of up to five malicious agents acording to agent heuristics. 
 
-#### Malicious Agent Heuristics
+#### Agent Heuristics
 - **Random:** This agent will make random incorrect claims.
 - **Always:** This agent will make claims half the time and hoenst claims the other half of the time.
 - **Game DDOS:** This agent will continously create games by submitting incorrect claims.
-- [JAM with Team on the last two]
+- **Purely Profit Seeking Honest Agent**: Plays the most profitable honest strategy.
+- **Purely Profit Seeking**: Plays the most profitable strategy regardless of honesty.
+- **Honest Agent**: Always Plays the honest strategy.
+
+**Bonus**: Are there any agent hueristics regarding collusion and or censorship that we should consider? 
+What combination of these agents are most important to consider?
+
+A positive result would be a game in which the profit seeking agent is not abel to make a profitable honest claim.
 
 #### Data Collection
 - game ID: the ID of the dispute game instance
-- sequence of claims and their timesteps and transaction meta data: the sequence of claims made by the agents in the game
+- Sequence of claims and their timesteps and transaction meta data: the sequence of claims made by the agents in the game cost of transactions and gas price.
 - Wether the game was resolved correctly or not
 - Agent meta-data: The cost of being malicious is the amount of money the malicious agent lost by being malicious.
 - How many claims were made in a game: this is the number of claims made by all agents in the game.
-- [What other data points should we collect?]
+- For Profit Seeking agents, what transactions do they consider sending? Honest, dishonest or nothing? and The Profit Value of each actions. 
+
 
 We will perform analysis on the data we collect from the simulations.
 We will graph the sequence of claims made over time and identify which agent the claim was made by.
 We will compute averages and standard deviations for relevant data points to identify any key differences between games.
-(Colin what do you think are more important data points to collect?)
+
+Given historical data, and distributions for gas price given the historical data.
+We can then run simulations where we sample from these distributions to get a more realistic simulation of the gas price.
+After 100M drawings from these distributions, we can draw some T-Stat conclusions about bond pricing: E.G Showing 99.99% confidence that if the network behaves as it has historically we dont believe there will be a vulnerability.
 
 ## Open questions
 - What is the status of durin. 
 Does it block us on anything? Should it be included in the scope?
 - What are the externally owned accounts that interact with the pre-image oracle? 
-
-
+- How much does OPLabs care about the Analysis Report vs the Simulation?
+How important is the reproducability of the simulation? E.G we plug and play any fault proof VMs and any program trace. 
