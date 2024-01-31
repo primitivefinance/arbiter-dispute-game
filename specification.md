@@ -9,7 +9,9 @@ Both deliverables will evolve from this repository.
 - A report of our findings and analysis of the dispute game located in the `security_report` directory.
 
 - A simulation of the dispute game located in the `src` directory. 
-We want to run 100M Sims on a (single or many but takes about 45min to compute) connon trace (on average 1.5b instructions) with at least 5 agent behaviors. The [Simulation Specification](#simulation-specification) section defines the simulation details below.
+We want to run 100M Sims on a (single or many) connon trace (on average 1.5b instructions) with at least 5 agent behaviors. 
+Each Cannon trace (which we can run as many simulations as we want on) takes about 45 minutes to solve.
+The [Simulation Specification](#simulation-specification) section defines the simulation details below.
 
 ## The Dispute Game
 The fault-proof dispute game is an interactive proof system used to prove the validity of the layer two states on layer one. 
@@ -17,7 +19,7 @@ Any number of players can play the game. The game has a 7-day chess clock and te
 Each player moves by making a `Claim` (see dispute game interface) about an index in a cannon execution trace. 
 If no opposing move is made, the claim implicitly resolves to true. 
 Each player must post a bond to make a claim. 
-If a player makes a false claim and the game resolves, their bond is forfeited and paid to the player who made the opposing correct claim.
+If a player makes a false claim and the game resolves, their bond is forfeited and paid to the player who made the opposing correct claim if one was made.
 
 - [Dispute Game Interface](https://github.com/ethereum-optimism/specs/blob/main/specs/dispute-game-interface.md)
 - [Fault Dispute Game](https://github.com/ethereum-optimism/specs/blob/main/specs/fault-dispute-game.md)
@@ -97,7 +99,8 @@ This is the most straightforward agent in the simulation. It will be responsible
     - Making a correct claim on a dispute game instance
 
 - **Malicious Agent:** Responsible for making incorrect claims on the dispute game instance. 
-This agent is also quite simple but can have many different variations. 
+This agent is also quite simple but can have many different variations. It is perfectly sufficient for a malicious agent to make random incorrect claims. 
+We should design up to five different malicious agent behaviors that make incorrect claims according to some huersitics. 
 It will be responsible for the following:
     - Making an incorrect claim on a dispute game instance
     - Creating a game by submitting a dishonest claim
@@ -117,7 +120,38 @@ We have everything we need to run the main simulation loop with these agents and
 Once we get this iteration off the ground, we can start getting creative with malicious agent behavior and see the stress tests under which we can put the dispute game.
 ![Alt text](assets/image-2.png)
 
+### Simulation Analysis
+
+We consider a positive result **explicitly** to be a reproducible game that is resolved incorrectly for any reason (we correctly identified a flaw in the system). 
+If we find a positive result we will investigate it further and identify and document the conditions under which it occurs in our report.
+We consider a negative result **explicitly** to discover no unexpected behavior in our simulations.
+
+We will run 100M (very rough estimate) game simulations on one or many cannon execiution traces. 
+We will run these simulations to completion regardless of any findings we make along the way.
+We will vary any combination of up to five malicious agents acording to some heuristics. 
+
+#### Malicious Agent Heuristics
+- **Random:** This agent will make random incorrect claims.
+- **Always:** This agent will make claims half the time and hoenst claims the other half of the time.
+- **Game DDOS:** This agent will continously create games by submitting incorrect claims.
+- [JAM with Team on the last two]
+
+#### Data Collection
+- game ID: the ID of the dispute game instance
+- sequence of claims and their timesteps and transaction meta data: the sequence of claims made by the agents in the game
+- Wether the game was resolved correctly or not
+- Agent meta-data: The cost of being malicious is the amount of money the malicious agent lost by being malicious.
+- How many claims were made in a game: this is the number of claims made by all agents in the game.
+- [What other data points should we collect?]
+
+We will perform analysis on the data we collect from the simulations.
+We will graph the sequence of claims made over time and identify which agent the claim was made by.
+We will compute averages and standard deviations for relevant data points to identify any key differences between games.
+(Colin what do you think are more important data points to collect?)
+
 ## Open questions
 - What is the status of durin. 
 Does it block us on anything? Should it be included in the scope?
 - What are the externally owned accounts that interact with the pre-image oracle? 
+
+
