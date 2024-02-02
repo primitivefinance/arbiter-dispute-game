@@ -27,7 +27,9 @@ to generate the pdf security report from the main.tex file, run the `./generate_
 - [Official Dispute Game Specification](https://github.com/ethereum-optimism/specs/blob/main/specs/fault-dispute-game.md)
 - [Dispute Game Video](https://www.youtube.com/watch?v=nIN5sNc6nQM)
 - [Bondorama](https://www.notion.so/oplabs/Bondorama-886cd1cfefcc44649f3e16f47d9a4477?pvs=4): Current Bond pricing for the game 
+- [Rollups taking off](https://ethereum-magicians.org/t/proposed-milestones-for-rollups-taking-off-training-wheels/11571/11)
 
 ### Stage 2 Decentralization
 - [Stage 2 boogaloo](https://hackmd.io/@clabby/BkZbT5hD6): What is stage two decentralization? 
 - [Durin](https://github.com/anton-rs/durin): Durin is a Rust Solver for the Dispute Game
+- [End Game is State 2](https://blog.oplabs.co/endgame-is-stage-2/)
